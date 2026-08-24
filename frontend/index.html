@@ -299,13 +299,25 @@
       </div>
 
       <div class="card">
-        <div class="card-label">Skill Demand in India (Live)</div>
+        <div class="card-label">Skill Demand in India (Live Job Postings)</div>
         <div class="skill-list" id="skills">
           <div class="skeleton"></div>
           <div class="skeleton"></div>
           <div class="skeleton"></div>
           <div class="skeleton"></div>
         </div>
+      </div>
+
+      <div
+        class="card full-width"
+        style="padding: 14px 28px; background: #f5f1e8"
+      >
+        <p style="font-size: 0.78rem; color: #888">
+          <strong>Methodology:</strong> Skill demand figures represent live job
+          postings mentioning each skill via Adzuna India. One posting may
+          mention multiple skills. Economic indicators sourced from World Bank
+          (India) and FRED (US Fed Rate).
+        </p>
       </div>
 
       <div class="card full-width">
@@ -374,6 +386,7 @@
             document.getElementById("context").innerHTML = indicators
               .map((ind) => {
                 const isUp = ind.change > 0;
+
                 const isGood = [
                   "Unemployment Rate",
                   "Inflation Rate",
@@ -383,17 +396,53 @@
                     ? isUp
                     : !isUp
                   : !isUp;
+
                 const arrow = ind.change === 0 ? "→" : isUp ? "↑" : "↓";
+
                 const color =
                   ind.change === 0 ? "#555" : isGood ? "#4ade80" : "#f87171";
+
                 return `
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #2a2a2a;">
-            <div>
-              <div style="font-size:0.8rem; color:#666; margin-bottom:4px">${ind.label} <span style="color:#333">(${ind.date})</span></div>
-              <div style="font-size:1.3rem; font-weight:700; color:#333">${ind.value}${ind.unit}</div>
+            <div style="
+              padding:14px 0;
+              border-bottom:1px solid #2a2a2a;
+            ">
+              <div style="
+                font-size:0.8rem;
+                color:#666;
+                margin-bottom:4px;
+              ">
+                ${ind.label}
+                <span style="color:#333">
+                  (${ind.date} · ${
+                    ind.label.includes("Fed") ? "FRED" : "World Bank"
+                  })
+                </span>
+              </div>
+
+              <div style="
+                display:flex;
+                justify-content:space-between;
+                align-items:center;
+              ">
+                <div style="
+                  font-size:1.8rem;
+                  font-weight:700;
+                  color:#333;
+                ">
+                  ${ind.value}${ind.unit}
+                </div>
+
+                <div style="
+                  font-size:1rem;
+                  font-weight:700;
+                  color:${color};
+                ">
+                  ${arrow} ${Math.abs(ind.change)}
+                </div>
+              </div>
             </div>
-            <div style="font-size:1rem; font-weight:700; color:${color}">${arrow} ${Math.abs(ind.change)}</div>
-          </div>`;
+          `;
               })
               .join("");
           })
@@ -415,7 +464,7 @@
         <div class="skill-row">
           <div class="skill-meta">
             <span class="skill-name">${skill}</span>
-            <span class="skill-count">${count.toLocaleString()} jobs</span>
+            <span class="skill-count">${count.toLocaleString()} postings</span>
           </div>
           <div class="bar-track">
             <div class="bar-fill" style="width:${(count / max) * 100}%"></div>

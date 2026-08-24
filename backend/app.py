@@ -73,7 +73,7 @@ def get_economic_indicators():
     current = float(obs[0]["value"])
     previous = float(obs[1]["value"])
     results.append({
-        "label": "US Fed Rate",
+        "label": "US Fed Rate (FRED)",
         "value": current,
         "unit": "%",
         "change": round(current - previous, 3),
@@ -110,14 +110,22 @@ def get_explanation(news, economic_context, skill_counts):
     Recent economic news:
     {news_summary}
     Current economic context: {economic_context}
-    Live job market demand in India right now:
+    Live job postings in India mentioning each skill (note: one posting can mention multiple skills):
     {skill_summary}
     Based on all of this, explain in plain language:
     1. What's happening in the economy and why it matters
-    2. Which skills are actually in demand right now vs overhyped
-    3. What this means specifically for a CS student in India
+    2. Which skills appear most in job postings right now — note these are posting counts, not a direct measure of supply vs demand
+    3. What this means specifically for a CS student in India right now
     4. One concrete action they should take this week
-    Be honest and direct. No corporate speak. Under 200 words.
+
+    Important rules:
+- Be honest and direct
+- No corporate speak
+- Do not claim Python is "universally required" — say it "appears most frequently in postings data"
+- Do not claim generalists are struggling vs specialists — the data doesn't measure that
+- Do not make supply/demand balance claims — you only have demand-side data
+- Stick to what the numbers actually show
+- Under 200 words
     """
     body = {
         "model": "claude-sonnet-4-6",
