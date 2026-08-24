@@ -1,0 +1,461 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ground Reality</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      @font-face {
+        font-family: "Crake";
+        src: url("./crake.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      body {
+        font-family: "Space Grotesk", sans-serif;
+        background-image: url("./bg.png");
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        color: #1a1a1a;
+        min-height: 100vh;
+        padding: 40px 20px;
+      }
+
+      header {
+        text-align: center;
+        margin-bottom: 48px;
+        border-bottom: 3px solid #1a1a1a;
+        padding-bottom: 24px;
+        max-width: 1100px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      header h1 {
+        font-family: "Crake", serif;
+        font-size: 6rem;
+        text-transform: uppercase;
+        letter-spacing: -1px;
+        color: #1a1a1a;
+      }
+
+      header p {
+        color: #555;
+        margin-top: 8px;
+        font-size: 1rem;
+        font-weight: 500;
+      }
+
+      .header-meta {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+        margin-top: 20px;
+      }
+
+      #timestamp {
+        color: #4f4b4b;
+        font-size: 0.82rem;
+      }
+
+      #refresh-btn {
+        background: #1a1a1a;
+        border: 2px solid #1a1a1a;
+        color: #f3efe7;
+        padding: 8px 20px;
+        border-radius: 0;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+
+      #refresh-btn:hover {
+        background: #f3efe7;
+        color: #1a1a1a;
+      }
+      #refresh-btn:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+        max-width: 1100px;
+        margin: 0 auto;
+        border: 3px solid #1a1a1a;
+      }
+
+      .card {
+        background: #faf8f3;
+        border: 1px solid #1a1a1a;
+        padding: 28px;
+      }
+
+      .card.full-width {
+        grid-column: 1 / -1;
+      }
+
+      .card-label {
+        font-family: "Archivo Black", sans-serif;
+        font-size: 0.85rem;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: #1a1a1a;
+        margin-bottom: 16px;
+        border-bottom: 2px solid #1a1a1a;
+        padding-bottom: 8px;
+      }
+
+      /* News */
+      .news-item {
+        padding: 16px 0;
+        border-bottom: 1px solid #ddd;
+      }
+      .news-item:last-child {
+        border-bottom: none;
+      }
+
+      .news-source {
+        font-size: 0.7rem;
+        color: #d6543c;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-weight: 700;
+        margin-bottom: 6px;
+      }
+
+      .news-title {
+        font-size: 0.95rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        line-height: 1.5;
+        margin-bottom: 6px;
+      }
+
+      .news-title a {
+        color: inherit;
+        text-decoration: none;
+      }
+      .news-title a:hover {
+        color: #d6543c;
+      }
+
+      .news-desc {
+        font-size: 0.82rem;
+        color: #777;
+        line-height: 1.5;
+      }
+
+      /* Skills */
+      .skill-list {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .skill-row {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .skill-meta {
+        display: flex;
+        justify-content: space-between;
+        font-size: 0.85rem;
+      }
+      .skill-name {
+        color: #1a1a1a;
+        text-transform: capitalize;
+        font-weight: 600;
+      }
+      .skill-count {
+        color: #999;
+      }
+
+      .bar-track {
+        background: #e5e0d8;
+        border-radius: 0;
+        height: 8px;
+      }
+
+      .bar-fill {
+        height: 8px;
+        border-radius: 0;
+        background: linear-gradient(90deg, #d6543c, #f0a04b);
+        transition: width 1s ease;
+        width: 0%;
+      }
+
+      /* Explanation */
+      .explanation-text {
+        font-size: 0.95rem;
+        line-height: 1.8;
+        color: #333;
+        white-space: pre-wrap;
+      }
+
+      .explanation-text strong {
+        color: #a7220b;
+      }
+
+      .tag {
+        display: inline-block;
+        background: #1a1a1a;
+        color: #f3efe7;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        padding: 4px 12px;
+        border-radius: 0;
+        margin-bottom: 16px;
+      }
+
+      /* Error state */
+      .error-msg {
+        color: #d6543c;
+        font-size: 0.85rem;
+        padding: 12px;
+        background: #fdf0ec;
+        border: 1px solid #d6543c;
+      }
+
+      /* Skeleton */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          #e5e0d8 25%,
+          #f0ece4 50%,
+          #e5e0d8 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 0;
+        height: 16px;
+        margin-bottom: 10px;
+      }
+
+      .skeleton.tall {
+        height: 80px;
+      }
+      .skeleton.short {
+        width: 60%;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Ground Reality</h1>
+      <p>The job market, honestly.</p>
+      <div class="header-meta">
+        <span id="timestamp">Never refreshed</span>
+        <button id="refresh-btn" onclick="loadAll()">↻ Refresh</button>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card full-width">
+        <div class="card-label">Latest Economic News</div>
+        <div id="news">
+          <div class="skeleton"></div>
+          <div class="skeleton short"></div>
+          <div class="skeleton tall"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Economic Indicators</div>
+        <div id="context">
+          <div class="skeleton"></div>
+          <div class="skeleton short"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton short"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Skill Demand in India (Live)</div>
+        <div class="skill-list" id="skills">
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+          <div class="skeleton"></div>
+        </div>
+      </div>
+
+      <div class="card full-width">
+        <div class="card-label">What This Means For You</div>
+        <span class="tag">AI Analysis</span>
+        <div id="explanation">
+          <div class="skeleton"></div>
+          <div class="skeleton short"></div>
+          <div class="skeleton tall"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const BASE = "http://127.0.0.1:5000";
+
+      function showSkeleton(id, count = 3, tall = false) {
+        document.getElementById(id).innerHTML = Array(count)
+          .fill(`<div class="skeleton ${tall ? "tall" : ""}"></div>`)
+          .join("");
+      }
+
+      function showError(id, message) {
+        document.getElementById(id).innerHTML =
+          `<div class="error-msg">⚠ ${message}</div>`;
+      }
+
+      function updateTimestamp() {
+        const now = new Date();
+        document.getElementById("timestamp").textContent =
+          `Last updated: ${now.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })}`;
+      }
+
+      function setRefreshing(val) {
+        const btn = document.getElementById("refresh-btn");
+        btn.disabled = val;
+        btn.textContent = val ? "↻ Refreshing..." : "↻ Refresh";
+      }
+
+      function loadNews() {
+        showSkeleton("news", 3);
+        return fetch(`${BASE}/api/news`)
+          .then((r) => r.json())
+          .then((articles) => {
+            document.getElementById("news").innerHTML = articles
+              .map(
+                (a) => `
+        <div class="news-item">
+          <div class="news-source">${a.source}</div>
+          <div class="news-title"><a href="${a.url}" target="_blank">${a.title}</a></div>
+          <div class="news-desc">${a.description || ""}</div>
+        </div>`,
+              )
+              .join("");
+          })
+          .catch(() =>
+            showError("news", "Couldn't load news. Check your News API key."),
+          );
+      }
+
+      function loadContext() {
+        showSkeleton("context", 4);
+        return fetch(`${BASE}/api/context`)
+          .then((r) => r.json())
+          .then((indicators) => {
+            document.getElementById("context").innerHTML = indicators
+              .map((ind) => {
+                const isUp = ind.change > 0;
+                const isGood = [
+                  "Unemployment Rate",
+                  "Inflation Rate",
+                  "GDP Growth",
+                ].includes(ind.label)
+                  ? ind.label === "GDP Growth"
+                    ? isUp
+                    : !isUp
+                  : !isUp;
+                const arrow = ind.change === 0 ? "→" : isUp ? "↑" : "↓";
+                const color =
+                  ind.change === 0 ? "#555" : isGood ? "#4ade80" : "#f87171";
+                return `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:14px 0; border-bottom:1px solid #2a2a2a;">
+            <div>
+              <div style="font-size:0.8rem; color:#666; margin-bottom:4px">${ind.label} <span style="color:#333">(${ind.date})</span></div>
+              <div style="font-size:1.3rem; font-weight:700; color:#333">${ind.value}${ind.unit}</div>
+            </div>
+            <div style="font-size:1rem; font-weight:700; color:${color}">${arrow} ${Math.abs(ind.change)}</div>
+          </div>`;
+              })
+              .join("");
+          })
+          .catch(() =>
+            showError("context", "Couldn't load economic indicators."),
+          );
+      }
+
+      function loadSkills() {
+        showSkeleton("skills", 4);
+        return fetch(`${BASE}/api/skills`)
+          .then((r) => r.json())
+          .then((skills) => {
+            const max = Math.max(...Object.values(skills));
+            const sorted = Object.entries(skills).sort((a, b) => b[1] - a[1]);
+            document.getElementById("skills").innerHTML = sorted
+              .map(
+                ([skill, count]) => `
+        <div class="skill-row">
+          <div class="skill-meta">
+            <span class="skill-name">${skill}</span>
+            <span class="skill-count">${count.toLocaleString()} jobs</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${(count / max) * 100}%"></div>
+          </div>
+        </div>`,
+              )
+              .join("");
+          })
+          .catch(() => showError("skills", "Couldn't load skill data."));
+      }
+
+      function loadExplanation() {
+        showSkeleton("explanation", 3, true);
+        return fetch(`${BASE}/api/explanation`)
+          .then((r) => r.json())
+          .then((data) => {
+            const formatted = data.explanation.replace(
+              /\*\*(.*?)\*\*/g,
+              "<strong>$1</strong>",
+            );
+            document.getElementById("explanation").innerHTML =
+              `<div class="explanation-text">${formatted}</div>`;
+          })
+          .catch(() => showError("explanation", "Couldn't load AI analysis."));
+      }
+
+      function loadAll() {
+        setRefreshing(true);
+        Promise.all([
+          loadNews(),
+          loadContext(),
+          loadSkills(),
+          loadExplanation(),
+        ]).then(() => {
+          updateTimestamp();
+          setRefreshing(false);
+        });
+      }
+
+      loadAll();
+    </script>
+  </body>
+</html>
